@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #2a9df4;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 200px;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            color: #ff6347;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Countdown to Your Special Date!</h1>
+    <form method="post">
+        Enter your special date (YYYY-MM-DD): <input type="text" name="end_date" required>
+        <button type="submit">Start Countdown</button>
+    </form>
+    {% if days_remaining %}
+
+
+        <h2>Only {{ days_remaining }} days left until {{ end_date }}!</h2>
+    {% endif %}
+</body>
+</html>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.onsubmit = function(e) {
+            e.preventDefault(); // Prevent the form from submitting normally
+            const endDate = document.querySelector('input[name="end_date"]').value;
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'end_date=' + endDate
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            });
+        };
+    });
+</script>

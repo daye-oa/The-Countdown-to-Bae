@@ -1,77 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Countdown App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to Our Special Day</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+            font-family: 'Cursive', sans-serif;
+            background-image: url('https://drive.google.com/file/d/1TK43hYHNV0Vsw9BsnE4qzTyaLWkLNans/view?usp=sharing'); /* Use a romantic background */
+            background-size: cover;
+            background-position: center;
+            color: #fff;
             text-align: center;
             padding: 50px;
+            min-height: 100vh;
         }
         h1 {
-            color: #2a9df4;
+            color: #ff69b4;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         form {
             margin-top: 20px;
         }
         input[type="text"] {
-            padding: 8px;
-            width: 200px;
-            border: 2px solid #aaa;
-            border-radius: 4px;
+            padding: 12px;
+            width: 250px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         button {
-            background-color: #4CAF50;
+            background-color: #ff69b4;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 18px;
             cursor: pointer;
-            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #ff1493;
         }
-        h2 {
-            color: #ff6347;
+        .countdown {
             margin-top: 40px;
+            font-size: 36px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4;
+            }
+            to {
+                text-shadow: 0 0 20px #ff69b4, 0 0 30px #ff69b4;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Countdown to Your Special Date!</h1>
+    <h1>Countdown to Our Special Day ❤️</h1>
     <form method="post">
-        Enter your special date (YYYY-MM-DD): <input type="text" name="end_date" required>
+        Enter our special date (YYYY-MM-DD): <input type="text" name="end_date" required>
         <button type="submit">Start Countdown</button>
     </form>
-    {% if days_remaining %}
 
-
-        <h2>Only {{ days_remaining }} days left until {{ end_date }}!</h2>
+    {% if end_date %}
+        <div class="countdown" id="countdown">
+            Loading countdown...
+        </div>
     {% endif %}
+
+    <script>
+        const targetDate = new Date("{{ end_date }}T00:00:00").getTime();
+
+        if (targetDate) {
+            const countdownElement = document.getElementById('countdown');
+
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    countdownElement.innerHTML = "The special day has arrived! ❤️";
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
-        form.onsubmit = function(e) {
-            e.preventDefault(); // Prevent the form from submitting normally
-            const endDate = document.querySelector('input[name="end_date"]').value;
-            fetch('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'end_date=' + endDate
-            })
-            .then(response => response.text())
-            .then(html => {
-                document.body.innerHTML = html;
-            });
-        };
-    });
-</script>
